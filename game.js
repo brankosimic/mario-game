@@ -129,6 +129,7 @@ if (leftBtn) {
     leftBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
         keys.ArrowLeft = true;
+        keys.ArrowRight = false;
     });
     leftBtn.addEventListener('touchend', (e) => {
         e.preventDefault();
@@ -140,6 +141,7 @@ if (rightBtn) {
     rightBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
         keys.ArrowRight = true;
+        keys.ArrowLeft = false;
     });
     rightBtn.addEventListener('touchend', (e) => {
         e.preventDefault();
@@ -238,11 +240,12 @@ function updatePlayer() {
             const oldHeight = player.height;
             player.width = 45;
             player.height = 60;
-            player.y += (player.height - oldHeight);
             playerSize = 1.5;
+            player.y -= (player.height - oldHeight);
             score += 200;
             scoreEl.textContent = `Score: ${score}`;
         }
+    }
     }
 
     // Check enemy collision
