@@ -117,6 +117,47 @@ document.addEventListener('keyup', (e) => {
     if (e.code === 'Space') keys.Space = false;
 });
 
+// Mobile controls
+const leftBtn = document.getElementById('leftBtn');
+const rightBtn = document.getElementById('rightBtn');
+const jumpBtn = document.getElementById('jumpBtn');
+
+if (leftBtn) {
+    leftBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keys.ArrowLeft = true;
+    });
+    leftBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keys.ArrowLeft = false;
+    });
+}
+
+if (rightBtn) {
+    rightBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keys.ArrowRight = true;
+    });
+    rightBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keys.ArrowRight = false;
+    });
+}
+
+if (jumpBtn) {
+    jumpBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keys.Space = true;
+        if (!gameRunning) {
+            resetGame();
+        }
+    });
+    jumpBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keys.Space = false;
+    });
+}
+
 function updatePlayer() {
     // Horizontal movement
     if (keys.ArrowLeft) {
