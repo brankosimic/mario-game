@@ -235,11 +235,11 @@ function updatePlayer() {
             player.y < mushroom.y + mushroom.height &&
             player.y + player.height > mushroom.y) {
             mushroom.collected = true;
-            playerSize = 1.5;
             const oldHeight = player.height;
             player.width = 45;
             player.height = 60;
-            player.y -= (player.height - oldHeight);
+            player.y += (player.height - oldHeight);
+            playerSize = 1.5;
             score += 200;
             scoreEl.textContent = `Score: ${score}`;
         }
