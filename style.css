@@ -127,7 +127,7 @@ body {
     transform: scale(0.95);
 }
 
-@media (max-width: 768px) and (min-height: 768px) {
+@media (max-width: 768px) {
     #mobile-controls {
         display: flex;
     }

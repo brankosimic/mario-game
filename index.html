@@ -7,16 +7,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <audio id="bgm" loop>
-        <source src="https://opengameart.org/sites/default/files/infinite-loop_12.wav" type="audio/wav">
-        <source src="https://freesound.org/data/previews/263/263662_2596445-lq.mp3" type="audio/mpeg">
-    </audio>
     <div id="game-container">
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div id="ui">
             <div id="score">Score: 0</div>
             <div id="lives">Lives: 3</div>
-            <button id="muteBtn" class="control-btn" style="width:40px;height:40px;font-size:14px;">🔊</button>
         </div>
         <div id="game-over" class="hidden">
             <h1>GAME OVER</h1>

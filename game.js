@@ -4,9 +4,6 @@ const scoreEl = document.getElementById('score');
 const livesEl = document.getElementById('lives');
 const gameOverScreen = document.getElementById('game-over');
 const winScreen = document.getElementById('win-screen');
-const bgm = document.getElementById('bgm');
-const muteBtn = document.getElementById('muteBtn');
-bgm.volume = 0.3;
 
 let score = 0;
 let lives = 3;
@@ -67,12 +64,12 @@ let coins = [
 
 // Enemies
 let enemies = [
-    { x: 300, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: 2, patrolStart: 250, patrolEnd: 500 },
-    { x: 600, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: -2, patrolStart: 550, patrolEnd: 700 },
-    { x: 450, y: 310, width: 30, height: 30, color: '#8B0000', velocityX: 2, patrolStart: 420, patrolEnd: 500 },
-    { x: 900, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: -2, patrolStart: 850, patrolEnd: 1000 },
-    { x: 1300, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: 2, patrolStart: 1250, patrolEnd: 1400 },
-    { x: 1700, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: -2, patrolStart: 1650, patrolEnd: 1800 }
+    { x: 300, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: 1.5, patrolStart: 250, patrolEnd: 500 },
+    { x: 600, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: -1.5, patrolStart: 550, patrolEnd: 700 },
+    { x: 450, y: 310, width: 30, height: 30, color: '#8B0000', velocityX: 1.5, patrolStart: 420, patrolEnd: 500 },
+    { x: 900, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: -1.5, patrolStart: 850, patrolEnd: 1000 },
+    { x: 1300, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: 1.5, patrolStart: 1250, patrolEnd: 1400 },
+    { x: 1700, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: -1.5, patrolStart: 1650, patrolEnd: 1800 }
 ];
 
 // Flag (goal)
@@ -161,6 +158,9 @@ if (jumpBtn) {
     });
 }
 
+// Audio controls
+const muteBtn = document.getElementById('muteBtn');
+
 function updatePlayer() {
     // Horizontal movement
     if (keys.ArrowLeft) {
@@ -236,8 +236,10 @@ function updatePlayer() {
             player.y + player.height > mushroom.y) {
             mushroom.collected = true;
             playerSize = 1.5;
+            const oldHeight = player.height;
             player.width = 45;
             player.height = 60;
+            player.y -= (player.height - oldHeight);
             score += 200;
             scoreEl.textContent = `Score: ${score}`;
         }
@@ -316,10 +318,6 @@ function resetGame() {
     
     coins.forEach(coin => coin.collected = false);
     mushrooms.forEach(mushroom => mushroom.collected = false);
-    
-    if (bgm && bgm.paused && !bgm.muted) {
-        bgm.play().catch(() => {});
-    }
 }
 
 function drawPlayer() {
@@ -490,30 +488,3 @@ function gameLoop() {
 
 // Start the game
 gameLoop();
-
-// Audio controls
-if (muteBtn) {
-    muteBtn.addEventListener('click', () => {
-        if (bgm.paused || bgm.muted) {
-            bgm.play().catch(() => {});
-            muteBtn.textContent = '🔊';
-            bgm.muted = false;
-        } else {
-            bgm.pause();
-            muteBtn.textContent = '🔇';
-            bgm.muted = true;
-        }
-    });
-    
-    document.addEventListener('click', () => {
-        if (bgm.paused) {
-            bgm.play().catch(() => {});
-        }
-    });
-    
-    document.addEventListener('keydown', () => {
-        if (bgm.paused) {
-            bgm.play().catch(() => {});
-        }
-    });
-}
