@@ -35,6 +35,24 @@ body {
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#muteBtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #8B4513;
+    font-size: 16px;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+#muteBtn.muted {
+    content: "🔇";
 }
 
 #score {
