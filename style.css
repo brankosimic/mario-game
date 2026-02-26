@@ -150,36 +150,37 @@ body {
     }
     
     #gameCanvas {
-        width: 800px;
-        height: 600px;
+        width: 80vw;
+        height: 60vw;
+        max-height: 60vh;
     }
     
     #mobile-controls {
         display: flex;
         justify-content: space-between;
-        width: 100%;
+        width: 80vw;
         max-width: 800px;
-        bottom: 20px;
+        bottom: 5vw;
         left: 50%;
         transform: translateX(-50%);
     }
     
     #leftBtn {
         position: absolute;
-        left: 30px;
-        bottom: 20px;
+        left: 5vw;
+        bottom: 5vw;
     }
     
     #rightBtn {
         position: absolute;
-        left: 100px;
-        bottom: 20px;
+        left: 12vw;
+        bottom: 5vw;
     }
     
     #jumpBtn {
         position: absolute;
-        right: 30px;
-        bottom: 20px;
+        right: 5vw;
+        bottom: 5vw;
         margin-top: 0;
     }
     
