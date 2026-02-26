@@ -85,12 +85,12 @@ const flag = {
     flagColor: '#FF0000'
 };
 
-// Mushrooms
-let mushrooms = [
-    { x: 350, y: 410, width: 25, height: 25, collected: false },
-    { x: 750, y: 210, width: 25, height: 25, collected: false },
-    { x: 1150, y: 360, width: 25, height: 25, collected: false },
-    { x: 1550, y: 180, width: 25, height: 25, collected: false }
+// Brick blocks with mushrooms
+let brickBlocks = [
+    { x: 200, y: 430, width: 30, height: 30, hasMushroom: true, bounced: false },
+    { x: 600, y: 230, width: 30, height: 30, hasMushroom: true, bounced: false },
+    { x: 1000, y: 340, width: 30, height: 30, hasMushroom: true, bounced: false },
+    { x: 1400, y: 160, width: 30, height: 30, hasMushroom: true, bounced: false }
 ];
 
 // Input handling
@@ -229,21 +229,26 @@ function updatePlayer() {
         }
     }
 
-    // Check mushroom collection
-    for (const mushroom of mushrooms) {
-        if (!mushroom.collected &&
-            player.x < mushroom.x + mushroom.width &&
-            player.x + player.width > mushroom.x &&
-            player.y < mushroom.y + mushroom.height &&
-            player.y + player.height > mushroom.y) {
-            mushroom.collected = true;
-            const oldHeight = player.height;
-            player.width = 45;
-            player.height = 60;
-            playerSize = 1.5;
-            player.y -= (player.height - oldHeight);
-            score += 200;
-            scoreEl.textContent = `Score: ${score}`;
+    // Check brick block collision
+    for (const block of brickBlocks) {
+        if (block.hasMushroom &&
+            player.x < block.x + block.width &&
+            player.x + player.width > block.x &&
+            player.y < block.y + block.height &&
+            player.y + player.height > block.y) {
+            
+            // Player hits block from below
+            if (player.velocityY >= 0 && player.y + player.height - player.velocityY <= block.y) {
+                block.hasMushroom = false;
+                block.bounced = true;
+                player.velocityY = -8;
+                player.width = 45;
+                player.height = 60;
+                playerSize = 1.5;
+                player.y -= (player.height - 40);
+                score += 200;
+                scoreEl.textContent = `Score: ${score}`;
+            }
         }
     }
 
@@ -276,6 +281,14 @@ function updateEnemies() {
         enemy.x += enemy.velocityX;
         if (enemy.x <= enemy.patrolStart || enemy.x + enemy.width >= enemy.patrolEnd) {
             enemy.velocityX *= -1;
+        }
+    }
+}
+
+function updateBricks() {
+    for (const block of brickBlocks) {
+        if (block.bounced && block.y > 400) {
+            block.y += 2;
         }
     }
 }
@@ -319,7 +332,10 @@ function resetGame() {
     resetPlayerPosition();
     
     coins.forEach(coin => coin.collected = false);
-    mushrooms.forEach(mushroom => mushroom.collected = false);
+    brickBlocks.forEach(block => {
+        block.hasMushroom = true;
+        block.bounced = false;
+    });
 }
 
 function drawPlayer() {
@@ -373,24 +389,26 @@ function drawCoins() {
 }
 
 function drawMushrooms() {
-    for (const mushroom of mushrooms) {
-        if (!mushroom.collected) {
-            const screenX = mushroom.x - cameraX;
-            // Stem
-            ctx.fillStyle = '#FFB6C1';
-            ctx.fillRect(screenX + 8, mushroom.y + 12, 9, 13);
-            // Cap
-            ctx.fillStyle = '#FF0000';
-            ctx.beginPath();
-            ctx.arc(screenX + 12, mushroom.y + 12, 12, Math.PI, 0);
-            ctx.fill();
-            // Spots
-            ctx.fillStyle = '#FFFFFF';
-            ctx.beginPath();
-            ctx.arc(screenX + 8, mushroom.y + 8, 3, 0, Math.PI * 2);
-            ctx.arc(screenX + 16, mushroom.y + 6, 3, 0, Math.PI * 2);
-            ctx.arc(screenX + 20, mushroom.y + 10, 2, 0, Math.PI * 2);
-            ctx.fill();
+    for (const block of brickBlocks) {
+        const screenX = block.x - cameraX;
+        if (block.hasMushroom) {
+            // Brick block
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(screenX, block.y, block.width, block.height);
+            // Brick pattern
+            ctx.fillStyle = '#A0522D';
+            ctx.fillRect(screenX + 3, block.y + 3, 10, 10);
+            ctx.fillRect(screenX + 17, block.y + 3, 10, 10);
+            ctx.fillRect(screenX + 3, block.y + 16, 10, 10);
+            ctx.fillRect(screenX + 17, block.y + 16, 10, 10);
+            // Question mark
+            ctx.fillStyle = '#FFD700';
+            ctx.font = '20px Arial';
+            ctx.fillText('?', screenX + 10, block.y + 22);
+        } else if (block.bounced) {
+            // Bounced empty block
+            ctx.fillStyle = '#654321';
+            ctx.fillRect(screenX, block.y, block.width, block.height);
         }
     }
 }
@@ -483,6 +501,7 @@ function gameLoop() {
         
         updatePlayer();
         updateEnemies();
+        updateBricks();
     }
     
     requestAnimationFrame(gameLoop);
