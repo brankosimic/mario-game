@@ -5,13 +5,46 @@ const livesEl = document.getElementById('lives');
 const gameOverScreen = document.getElementById('game-over');
 const winScreen = document.getElementById('win-screen');
 const muteBtn = document.getElementById('muteBtn');
-
-
+const rotateOverlay = document.getElementById('rotate-overlay');
 
 let score = 0;
 let lives = 3;
-let gameRunning = true;
+let gameRunningValue = true;
 let playerSize = 1;
+
+// Orientation detection
+function checkOrientation() {
+    const isMobile = window.innerWidth <= 768;
+    const isLandscape = window.innerWidth > window.innerHeight;
+    
+    if (isMobile && !isLandscape) {
+        rotateOverlay.classList.remove('hidden');
+        gameRunningValue = false;
+    } else {
+        rotateOverlay.classList.add('hidden');
+        if (!gameOverScreen.classList.contains('hidden') || !winScreen.classList.contains('hidden')) {
+            // Game hasn't started yet or was reset
+            if (gameOverScreen.classList.contains('hidden') && winScreen.classList.contains('hidden')) {
+                gameRunningValue = true;
+            }
+        } else {
+            gameRunningValue = true;
+        }
+    }
+}
+
+// Initial check
+checkOrientation();
+
+// Listen for orientation changes
+window.addEventListener('orientationchange', () => {
+    setTimeout(checkOrientation, 100);
+});
+
+// Also check on resize for tablet devices
+window.addEventListener('resize', () => {
+    setTimeout(checkOrientation, 100);
+});
 
 // Player properties
 const player = {
@@ -85,13 +118,7 @@ const flag = {
     flagColor: '#FF0000'
 };
 
-// Brick blocks with mushrooms
-let brickBlocks = [
-    { x: 200, y: 350, width: 30, height: 30, hasMushroom: true, bounced: false },
-    { x: 600, y: 150, width: 30, height: 30, hasMushroom: true, bounced: false },
-    { x: 1000, y: 260, width: 30, height: 30, hasMushroom: true, bounced: false },
-    { x: 1400, y: 80, width: 30, height: 30, hasMushroom: true, bounced: false }
-];
+
 
 // Input handling
 const keys = {
@@ -108,7 +135,7 @@ document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowRight') keys.ArrowRight = true;
     if (e.code === 'Space') {
         keys.Space = true;
-        if (!gameRunning) {
+        if (!gameRunningValue) {
             resetGame();
         }
     }
@@ -161,7 +188,7 @@ if (jumpBtn) {
     jumpBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
         keys.Space = true;
-        if (!gameRunning) {
+        if (!gameRunningValue) {
             resetGame();
         }
     });
@@ -208,22 +235,6 @@ function updatePlayer() {
     if (cameraX < 0) cameraX = 0;
     if (cameraX > mapWidth - canvas.width) cameraX = mapWidth - canvas.width;
 
-    // Check platform collision
-    player.grounded = false;
-    for (const platform of platforms) {
-            if (player.x < platform.x + platform.width &&
-                player.x + player.width > platform.x &&
-                player.y + player.height > platform.y &&
-                player.y + player.height < platform.y + 20) {
-            
-            if (player.velocityY >= 0) {
-                player.y = platform.y - player.height;
-                player.velocityY = 0;
-                player.grounded = true;
-            }
-        }
-    }
-
     // Check coin collection
     for (const coin of coins) {
         if (!coin.collected &&
@@ -237,34 +248,20 @@ function updatePlayer() {
         }
     }
 
-    // Check brick block collision
-    for (const block of brickBlocks) {
-        if (block.hasMushroom &&
-            player.x < block.x + block.width &&
-            player.x + player.width > block.x &&
-            player.y < block.y + block.height &&
-            player.y + player.height > block.y) {
+
+
+    // Check platform collision (after potential growth)
+    player.grounded = false;
+    for (const platform of platforms) {
+        if (player.x < platform.x + platform.width &&
+            player.x + player.width > platform.x &&
+            player.y + player.height > platform.y &&
+            player.y + player.height < platform.y + 15 &&
+            player.velocityY >= 0) {
             
-            // Player hits block from below
-            if (player.velocityY >= 0 && player.y + player.height - player.velocityY <= block.y) {
-                block.hasMushroom = false;
-                block.bounced = true;
-                player.velocityY = -8;
-                player.width = 45;
-                player.height = 60;
-                playerSize = 1.5;
-                // Find platform to stand on
-                for (const platform of platforms) {
-                    if (player.x < platform.x + platform.width &&
-                        player.x + player.width > platform.x &&
-                        platform.y <= player.y + player.height) {
-                        player.y = platform.y - player.height;
-                        break;
-                    }
-                }
-                score += 200;
-                scoreEl.textContent = `Score: ${score}`;
-            }
+            player.y = platform.y - player.height;
+            player.velocityY = 0;
+            player.grounded = true;
         }
     }
 
@@ -301,19 +298,13 @@ function updateEnemies() {
     }
 }
 
-function updateBricks() {
-    for (const block of brickBlocks) {
-        if (block.bounced && block.y > 400) {
-            block.y += 2;
-        }
-    }
-}
+
 
 function handlePlayerDeath() {
     lives--;
     livesEl.textContent = `Lives: ${lives}`;
     if (lives <= 0) {
-        gameRunning = false;
+        gameRunningValue = false;
         gameOverScreen.classList.remove('hidden');
     } else {
         resetPlayerPosition();
@@ -321,7 +312,7 @@ function handlePlayerDeath() {
 }
 
 function handleWin() {
-    gameRunning = false;
+    gameRunningValue = false;
     winScreen.classList.remove('hidden');
 }
 
@@ -343,15 +334,11 @@ function resetGame() {
     livesEl.textContent = `Lives: ${lives}`;
     gameOverScreen.classList.add('hidden');
     winScreen.classList.add('hidden');
-    gameRunning = true;
+    gameRunningValue = true;
     
     resetPlayerPosition();
     
     coins.forEach(coin => coin.collected = false);
-    brickBlocks.forEach(block => {
-        block.hasMushroom = true;
-        block.bounced = false;
-    });
 }
 
 function drawPlayer() {
@@ -404,30 +391,7 @@ function drawCoins() {
     }
 }
 
-function drawMushrooms() {
-    for (const block of brickBlocks) {
-        const screenX = block.x - cameraX;
-        if (block.hasMushroom) {
-            // Brick block
-            ctx.fillStyle = '#8B4513';
-            ctx.fillRect(screenX, block.y, block.width, block.height);
-            // Brick pattern
-            ctx.fillStyle = '#A0522D';
-            ctx.fillRect(screenX + 3, block.y + 3, 10, 10);
-            ctx.fillRect(screenX + 17, block.y + 3, 10, 10);
-            ctx.fillRect(screenX + 3, block.y + 16, 10, 10);
-            ctx.fillRect(screenX + 17, block.y + 16, 10, 10);
-            // Question mark
-            ctx.fillStyle = '#FFD700';
-            ctx.font = '20px Arial';
-            ctx.fillText('?', screenX + 10, block.y + 22);
-        } else if (block.bounced) {
-            // Bounced empty block
-            ctx.fillStyle = '#654321';
-            ctx.fillRect(screenX, block.y, block.width, block.height);
-        }
-    }
-}
+
 
 function drawEnemies() {
     for (const enemy of enemies) {
@@ -504,24 +468,24 @@ function drawBackground() {
 }
 
 function gameLoop() {
-    if (gameRunning) {
+    if (gameRunningValue) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         drawBackground();
         drawPlatforms();
         drawCoins();
-        drawMushrooms();
         drawFlag();
         drawEnemies();
         drawPlayer();
         
         updatePlayer();
         updateEnemies();
-        updateBricks();
     }
     
     requestAnimationFrame(gameLoop);
 }
+
+
 
 // Audio synthesizer for background music
 let audioContext = null;
