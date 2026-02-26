@@ -149,6 +149,48 @@ body {
     }
 }
 
+@media (orientation: portrait) {
+    #gameCanvas {
+        width: 100vw;
+        height: 100vh;
+        object-fit: contain;
+    }
+    
+    #rotate-overlay {
+        display: flex;
+    }
+    
+    #mobile-controls {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        bottom: 20px;
+    }
+    
+    #leftBtn {
+        position: absolute;
+        left: 20px;
+        bottom: 20px;
+    }
+    
+    #rightBtn {
+        position: absolute;
+        left: 90px;
+        bottom: 20px;
+    }
+    
+    #jumpBtn {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+        margin-top: 0;
+    }
+    
+    #instructions {
+        display: none;
+    }
+}
+
 @media (orientation: landscape) {
     #gameCanvas {
         width: 100vw;

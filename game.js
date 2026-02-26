@@ -63,9 +63,9 @@ const player = {
 
 // Interactive bricks that spawn mushrooms
 const bricks = [
-    { x: 200, y: 410, width: 40, height: 40, hit: false, bounceOffset: 0 },
-    { x: 400, y: 310, width: 40, height: 40, hit: false, bounceOffset: 0 },
-    { x: 600, y: 210, width: 40, height: 40, hit: false, bounceOffset: 0 }
+    { x: 150, y: 400, width: 40, height: 40, hit: false, bounceOffset: 0 },
+    { x: 450, y: 350, width: 40, height: 40, hit: false, bounceOffset: 0 },
+    { x: 750, y: 300, width: 40, height: 40, hit: false, bounceOffset: 0 }
 ];
 
 let mushrooms = [];
@@ -278,12 +278,12 @@ function updatePlayer() {
     for (const brick of bricks) {
         if (brick.hit) continue;
         
-        // Check if player is hitting brick from below
+        // Check if player's head touches brick bottom
         if (player.velocityY > 0 &&
-            player.x + player.width > brick.x &&
             player.x < brick.x + brick.width &&
-            player.y + player.height > brick.y &&
-            player.y + player.height < brick.y + brick.height + 10) {
+            player.x + player.width > brick.x &&
+            player.y + player.height >= brick.y &&
+            player.y + player.height < brick.y + 5) {
             
             // Player head hits brick - brick bounces up
             brick.hit = true;
