@@ -152,6 +152,25 @@ body {
     
     #mobile-controls {
         display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 800px;
+        bottom: 20px;
+    }
+    
+    #leftBtn, #rightBtn {
+        position: absolute;
+        left: 20px;
+    }
+    
+    #rightBtn {
+        left: 90px;
+    }
+    
+    #jumpBtn {
+        position: absolute;
+        right: 20px;
+        margin-top: 0;
     }
     
     #instructions {
