@@ -4,9 +4,9 @@ const scoreEl = document.getElementById('score');
 const livesEl = document.getElementById('lives');
 const gameOverScreen = document.getElementById('game-over');
 const winScreen = document.getElementById('win-screen');
-const bgm = document.getElementById('bgm');
 const muteBtn = document.getElementById('muteBtn');
-bgm.volume = 0.3;
+
+
 
 let score = 0;
 let lives = 3;
@@ -486,32 +486,91 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
+// Audio synthesizer for background music
+let audioContext = null;
+let masterGain = null;
+
+function initAudio() {
+    if (audioContext) return;
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioContext.createGain();
+    masterGain.connect(audioContext.destination);
+    masterGain.gain.value = 0.3;
+}
+
+function playNote(frequency, duration) {
+    if (!audioContext) return;
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.type = 'square';
+    oscillator.frequency.value = frequency;
+    oscillator.connect(gainNode);
+    gainNode.connect(masterGain);
+    
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + duration);
+}
+
+// Super Mario Bros theme notes (simplified)
+const marioTheme = [
+    523, 523, 0, 523, 0, 392, 0, 0,
+    261, 261, 0, 261, 0, 0, 392, 0,
+    349, 349, 0, 349, 0, 0, 0, 0,
+    523, 0, 0, 0, 659, 0, 0, 0,
+    523, 0, 0, 0, 493, 0, 0, 0,
+    466, 0, 0, 0, 440, 0, 0, 0
+];
+
+let noteIndex = 0;
+let noteTimer = null;
+
+function playMarioTheme() {
+    if (!audioContext) return;
+    const note = marioTheme[noteIndex];
+    if (note > 0) {
+        playNote(note, 0.15);
+    }
+    noteIndex = (noteIndex + 1) % marioTheme.length;
+    noteTimer = setTimeout(playMarioTheme, 200);
+}
+
 // Start the game
 gameLoop();
+
+// Initialize audio on first interaction
+document.addEventListener('click', () => {
+    initAudio();
+    if (!noteTimer) {
+        playMarioTheme();
+    }
+});
+
+document.addEventListener('keydown', () => {
+    initAudio();
+    if (!noteTimer) {
+        playMarioTheme();
+    }
+});
 
 // Audio controls
 if (muteBtn) {
     muteBtn.addEventListener('click', () => {
-        if (bgm.paused || bgm.muted) {
-            bgm.play().catch(() => {});
-            muteBtn.textContent = '🔊';
-            bgm.muted = false;
-        } else {
-            bgm.pause();
-            muteBtn.textContent = '🔇';
-            bgm.muted = true;
-        }
-    });
-    
-    document.addEventListener('click', () => {
-        if (bgm.paused) {
-            bgm.play().catch(() => {});
-        }
-    });
-    
-    document.addEventListener('keydown', () => {
-        if (bgm.paused) {
-            bgm.play().catch(() => {});
+        initAudio();
+        if (masterGain) {
+            if (masterGain.gain.value > 0) {
+                masterGain.gain.value = 0;
+                muteBtn.textContent = '🔇';
+            } else {
+                masterGain.gain.value = 0.3;
+                muteBtn.textContent = '🔊';
+                if (!noteTimer) {
+                    playMarioTheme();
+                }
+            }
         }
     });
 }
