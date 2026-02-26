@@ -161,9 +161,6 @@ if (jumpBtn) {
     });
 }
 
-// Audio controls
-const muteBtn = document.getElementById('muteBtn');
-
 function updatePlayer() {
     // Horizontal movement
     if (keys.ArrowLeft) {
