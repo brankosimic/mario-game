@@ -208,6 +208,35 @@ if (jumpBtn) {
 }
 
 function updatePlayer() {
+    // Check brick collision BEFORE moving
+    for (const brick of bricks) {
+        if (brick.hit) continue;
+        
+        // Check if player's head touches brick bottom
+        if (player.velocityY > 0 &&
+            player.x + player.width > brick.x &&
+            player.x < brick.x + brick.width &&
+            player.y + player.height >= brick.y &&
+            player.y + player.height < brick.y + 20) {
+            
+            // Player head hits brick - brick bounces up
+            brick.hit = true;
+            brick.bounceOffset = -15;
+            
+            // Spawn mushroom
+            mushrooms.push({
+                x: brick.x + brick.width / 2,
+                y: brick.y - brick.height,
+                width: 20,
+                height: 20,
+                velocityX: 3,
+                velocityY: -10,
+                gravity: 0.5,
+                grounded: false
+            });
+        }
+    }
+    
     // Horizontal movement
     if (keys.ArrowLeft) {
         player.velocityX = -player.speed;
@@ -274,33 +303,7 @@ function updatePlayer() {
         }
     }
 
-    // Check brick collision - player jumps into bricks from below
-    for (const brick of bricks) {
-        if (brick.hit) continue;
-        
-        // Check if player's head touches brick bottom
-        if (player.velocityY > 0 &&
-            player.x < brick.x + brick.width &&
-            player.x + player.width > brick.x &&
-            player.y + player.height >= brick.y &&
-            player.y + player.height < brick.y + 5) {
-            
-            // Player head hits brick - brick bounces up
-            brick.hit = true;
-            brick.bounceOffset = -15;
-            
-            // Spawn mushroom
-            mushrooms.push({
-                x: brick.x + brick.width / 2,
-                y: brick.y - brick.height,
-                width: 20,
-                height: 20,
-                velocityX: 3,
-                velocityY: -10,
-                gravity: 0.5,
-                grounded: false
-            });
-        }
+
     }
 
     // Check enemy collision
