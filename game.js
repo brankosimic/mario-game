@@ -4,6 +4,9 @@ const scoreEl = document.getElementById('score');
 const livesEl = document.getElementById('lives');
 const gameOverScreen = document.getElementById('game-over');
 const winScreen = document.getElementById('win-screen');
+const bgm = document.getElementById('bgm');
+const muteBtn = document.getElementById('muteBtn');
+bgm.volume = 0.3;
 
 let score = 0;
 let lives = 3;
@@ -488,3 +491,30 @@ function gameLoop() {
 
 // Start the game
 gameLoop();
+
+// Audio controls
+if (muteBtn) {
+    muteBtn.addEventListener('click', () => {
+        if (bgm.paused || bgm.muted) {
+            bgm.play().catch(() => {});
+            muteBtn.textContent = '🔊';
+            bgm.muted = false;
+        } else {
+            bgm.pause();
+            muteBtn.textContent = '🔇';
+            bgm.muted = true;
+        }
+    });
+    
+    document.addEventListener('click', () => {
+        if (bgm.paused) {
+            bgm.play().catch(() => {});
+        }
+    });
+    
+    document.addEventListener('keydown', () => {
+        if (bgm.paused) {
+            bgm.play().catch(() => {});
+        }
+    });
+}

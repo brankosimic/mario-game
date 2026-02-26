@@ -7,11 +7,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <audio id="bgm" loop>
+        <source src="https://opengameart.org/sites/default/files/2020-07/Super_Mario_Bros_-_Ground_Theme.mp3" type="audio/mpeg">
+    </audio>
     <div id="game-container">
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div id="ui">
             <div id="score">Score: 0</div>
             <div id="lives">Lives: 3</div>
+            <button id="muteBtn" class="control-btn">🔊</button>
         </div>
         <div id="game-over" class="hidden">
             <h1>GAME OVER</h1>

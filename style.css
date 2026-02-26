@@ -51,10 +51,6 @@ body {
     touch-action: manipulation;
 }
 
-#muteBtn.muted {
-    content: "🔇";
-}
-
 #score {
     margin-bottom: 5px;
 }
@@ -109,17 +105,28 @@ body {
 }
 
 .control-btn {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background: rgba(255, 255, 255, 0.8);
     border: 3px solid #8B4513;
     border-radius: 50%;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     color: #8B4513;
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    position: relative;
+}
+
+.control-btn::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    border-radius: 50%;
 }
 
 .control-btn:active {
