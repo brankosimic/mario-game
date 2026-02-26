@@ -137,50 +137,40 @@ body {
     }
     
     #gameCanvas {
-        width: 100%;
-        height: auto;
+        width: 100vw;
+        height: 100vh;
     }
 }
 
 @media (orientation: landscape) {
-    #game-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
     #gameCanvas {
-        width: 80vw;
-        height: 60vw;
-        max-height: 60vh;
+        width: 100vw;
+        height: 100vh;
     }
     
     #mobile-controls {
         display: flex;
         justify-content: space-between;
-        width: 80vw;
-        max-width: 800px;
-        bottom: 5vw;
-        left: 50%;
-        transform: translateX(-50%);
+        width: 100%;
+        bottom: 20px;
     }
     
     #leftBtn {
         position: absolute;
-        left: 5vw;
-        bottom: 5vw;
+        left: 20px;
+        bottom: 20px;
     }
     
     #rightBtn {
         position: absolute;
-        left: 12vw;
-        bottom: 5vw;
+        left: 90px;
+        bottom: 20px;
     }
     
     #jumpBtn {
         position: absolute;
-        right: 5vw;
-        bottom: 5vw;
+        right: 20px;
+        bottom: 20px;
         margin-top: 0;
     }
     
