@@ -246,7 +246,6 @@ function updatePlayer() {
             scoreEl.textContent = `Score: ${score}`;
         }
     }
-    }
 
     // Check enemy collision
     for (const enemy of enemies) {
