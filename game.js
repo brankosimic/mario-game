@@ -8,6 +8,7 @@ const winScreen = document.getElementById('win-screen');
 let score = 0;
 let lives = 3;
 let gameRunning = true;
+let playerSize = 1;
 
 // Player properties
 const player = {
@@ -80,6 +81,14 @@ const flag = {
     color: '#00FF00',
     flagColor: '#FF0000'
 };
+
+// Mushrooms
+let mushrooms = [
+    { x: 350, y: 410, width: 25, height: 25, collected: false },
+    { x: 750, y: 210, width: 25, height: 25, collected: false },
+    { x: 1150, y: 360, width: 25, height: 25, collected: false },
+    { x: 1550, y: 180, width: 25, height: 25, collected: false }
+];
 
 // Input handling
 const keys = {
@@ -174,6 +183,22 @@ function updatePlayer() {
         }
     }
 
+    // Check mushroom collection
+    for (const mushroom of mushrooms) {
+        if (!mushroom.collected &&
+            player.x < mushroom.x + mushroom.width &&
+            player.x + player.width > mushroom.x &&
+            player.y < mushroom.y + mushroom.height &&
+            player.y + player.height > mushroom.y) {
+            mushroom.collected = true;
+            playerSize = 1.5;
+            player.width = 45;
+            player.height = 60;
+            score += 200;
+            scoreEl.textContent = `Score: ${score}`;
+        }
+    }
+
     // Check enemy collision
     for (const enemy of enemies) {
         if (player.x < enemy.x + enemy.width &&
@@ -228,11 +253,15 @@ function resetPlayerPosition() {
     player.y = 400;
     player.velocityX = 0;
     player.velocityY = 0;
+    playerSize = 1;
+    player.width = 30;
+    player.height = 40;
 }
 
 function resetGame() {
     score = 0;
     lives = 3;
+    playerSize = 1;
     scoreEl.textContent = `Score: ${score}`;
     livesEl.textContent = `Lives: ${lives}`;
     gameOverScreen.classList.add('hidden');
@@ -242,26 +271,30 @@ function resetGame() {
     resetPlayerPosition();
     
     coins.forEach(coin => coin.collected = false);
+    mushrooms.forEach(mushroom => mushroom.collected = false);
 }
 
 function drawPlayer() {
     const screenX = player.x - cameraX;
+    const scaledWidth = player.width * playerSize;
+    const scaledHeight = player.height * playerSize;
+    
     // Body
     ctx.fillStyle = player.color;
-    ctx.fillRect(screenX, player.y, player.width, player.height);
+    ctx.fillRect(screenX, player.y, scaledWidth, scaledHeight);
     
     // Hat
     ctx.fillStyle = '#B22222';
-    ctx.fillRect(screenX - 5, player.y - 5, player.width + 10, 10);
+    ctx.fillRect(screenX - 5, player.y - 5, scaledWidth + 10, 10);
     
     // Face
     ctx.fillStyle = '#FFB6C1';
-    ctx.fillRect(screenX + 5, player.y + 5, 20, 15);
+    ctx.fillRect(screenX + 5, player.y + 5, 20 * playerSize, 15 * playerSize);
     
     // Eyes
     ctx.fillStyle = 'black';
-    ctx.fillRect(screenX + 8, player.y + 8, 4, 4);
-    ctx.fillRect(screenX + 18, player.y + 8, 4, 4);
+    ctx.fillRect(screenX + 8, player.y + 8, 4 * playerSize, 4 * playerSize);
+    ctx.fillRect(screenX + 18 * playerSize, player.y + 8, 4 * playerSize, 4 * playerSize);
 }
 
 function drawPlatforms() {
@@ -287,6 +320,29 @@ function drawCoins() {
             ctx.strokeStyle = '#DAA520';
             ctx.lineWidth = 2;
             ctx.stroke();
+        }
+    }
+}
+
+function drawMushrooms() {
+    for (const mushroom of mushrooms) {
+        if (!mushroom.collected) {
+            const screenX = mushroom.x - cameraX;
+            // Stem
+            ctx.fillStyle = '#FFB6C1';
+            ctx.fillRect(screenX + 8, mushroom.y + 12, 9, 13);
+            // Cap
+            ctx.fillStyle = '#FF0000';
+            ctx.beginPath();
+            ctx.arc(screenX + 12, mushroom.y + 12, 12, Math.PI, 0);
+            ctx.fill();
+            // Spots
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(screenX + 8, mushroom.y + 8, 3, 0, Math.PI * 2);
+            ctx.arc(screenX + 16, mushroom.y + 6, 3, 0, Math.PI * 2);
+            ctx.arc(screenX + 20, mushroom.y + 10, 2, 0, Math.PI * 2);
+            ctx.fill();
         }
     }
 }
@@ -372,6 +428,7 @@ function gameLoop() {
         drawBackground();
         drawPlatforms();
         drawCoins();
+        drawMushrooms();
         drawFlag();
         drawEnemies();
         drawPlayer();
