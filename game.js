@@ -61,6 +61,15 @@ const player = {
     grounded: false
 };
 
+// Interactive bricks that spawn mushrooms
+const bricks = [
+    { x: 200, y: 410, width: 40, height: 40, hit: false, bounceOffset: 0 },
+    { x: 400, y: 310, width: 40, height: 40, hit: false, bounceOffset: 0 },
+    { x: 600, y: 210, width: 40, height: 40, hit: false, bounceOffset: 0 }
+];
+
+let mushrooms = [];
+
 // Camera/Scrolling
 let cameraX = 0;
 const mapWidth = 2000;
@@ -265,6 +274,35 @@ function updatePlayer() {
         }
     }
 
+    // Check brick collision - player jumps into bricks from below
+    for (const brick of bricks) {
+        if (brick.hit) continue;
+        
+        // Check if player is hitting brick from below
+        if (player.velocityY > 0 &&
+            player.x + player.width > brick.x &&
+            player.x < brick.x + brick.width &&
+            player.y + player.height > brick.y &&
+            player.y + player.height < brick.y + brick.height + 10) {
+            
+            // Player head hits brick - brick bounces up
+            brick.hit = true;
+            brick.bounceOffset = -15;
+            
+            // Spawn mushroom
+            mushrooms.push({
+                x: brick.x + brick.width / 2,
+                y: brick.y - brick.height,
+                width: 20,
+                height: 20,
+                velocityX: 3,
+                velocityY: -10,
+                gravity: 0.5,
+                grounded: false
+            });
+        }
+    }
+
     // Check enemy collision
     for (const enemy of enemies) {
         if (player.x < enemy.x + enemy.width &&
@@ -376,6 +414,98 @@ function drawPlatforms() {
     }
 }
 
+function drawBricks() {
+    for (const brick of bricks) {
+        const screenX = brick.x - cameraX;
+        
+        // Apply bounce animation
+        let y = brick.y + brick.bounceOffset;
+        if (brick.bounceOffset < 0) {
+            brick.bounceOffset += 1;
+            if (brick.bounceOffset > 0) {
+                brick.bounceOffset = 0;
+            }
+        }
+        
+        // Draw brick
+        ctx.fillStyle = '#CD853F';
+        ctx.fillRect(screenX, y, brick.width, brick.height);
+        
+        // Brick border
+        ctx.strokeStyle = '#8B4513';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(screenX, y, brick.width, brick.height);
+        
+        // Question mark if not hit
+        if (!brick.hit) {
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 24px Arial';
+            ctx.fillText('?', screenX + 15, y + 28);
+        }
+    }
+}
+
+function updateBricks() {
+    for (const brick of bricks) {
+        if (brick.bounceOffset > 0) {
+            brick.bounceOffset = 0;
+        }
+    }
+}
+
+function drawMushrooms() {
+    for (const mushroom of mushrooms) {
+        const screenX = mushroom.x - cameraX;
+        
+        // Draw mushroom cap
+        ctx.fillStyle = '#FF0000';
+        ctx.beginPath();
+        ctx.arc(screenX + mushroom.width / 2, mushroom.y + mushroom.height / 2, mushroom.width / 2, Math.PI, 0);
+        ctx.fill();
+        
+        // Draw mushroom stem
+        ctx.fillStyle = '#FFD700';
+        ctx.fillRect(screenX + 5, mushroom.y + mushroom.height / 2, 10, mushroom.height / 2);
+        
+        // White spots on cap
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(screenX + 8, mushroom.y + 8, 3, 0, Math.PI * 2);
+        ctx.arc(screenX + 16, mushroom.y + 6, 3, 0, Math.PI * 2);
+        ctx.arc(screenX + 24, mushroom.y + 8, 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function updateMushrooms() {
+    for (let i = mushrooms.length - 1; i >= 0; i--) {
+        const mushroom = mushrooms[i];
+        
+        mushroom.velocityY += mushroom.gravity;
+        mushroom.x += mushroom.velocityX;
+        mushroom.y += mushroom.velocityY;
+        
+        // Check platform collision
+        for (const platform of platforms) {
+            if (mushroom.x + mushroom.width > platform.x &&
+                mushroom.x < platform.x + platform.width &&
+                mushroom.y + mushroom.height > platform.y &&
+                mushroom.y + mushroom.height < platform.y + 10 &&
+                mushroom.velocityY >= 0) {
+                
+                mushroom.y = platform.y - mushroom.height;
+                mushroom.velocityY = 0;
+                mushroom.grounded = true;
+            }
+        }
+        
+        // Remove mushroom if off screen
+        if (mushroom.x > mapWidth) {
+            mushrooms.splice(i, 1);
+        }
+    }
+}
+
 function drawCoins() {
     for (const coin of coins) {
         if (!coin.collected) {
@@ -473,12 +603,16 @@ function gameLoop() {
         
         drawBackground();
         drawPlatforms();
+        drawBricks();
+        drawMushrooms();
         drawCoins();
         drawFlag();
         drawEnemies();
         drawPlayer();
         
         updatePlayer();
+        updateBricks();
+        updateMushrooms();
         updateEnemies();
     }
     

@@ -23,6 +23,16 @@
             <h1>YOU WIN!</h1>
             <p>Press SPACE to play again</p>
         </div>
+        <div id="bricks-login" class="hidden">
+            <div class="login-content">
+                <h2>BRICKS LOGIN</h2>
+                <p>Enter your password by hitting the correct bricks from below</p>
+                <div id="brick-grid"></div>
+                <div id="login-message"></div>
+                <div id="password-display"></div>
+                <button id="back-to-game" class="control-btn">Back to Game</button>
+            </div>
+        </div>
         <div id="instructions">
             <p>Arrow Keys to Move | SPACE to Jump</p>
         </div>
@@ -30,6 +40,15 @@
             <button id="leftBtn" class="control-btn">←</button>
             <button id="rightBtn" class="control-btn">→</button>
             <button id="jumpBtn" class="control-btn">↑</button>
+        </div>
+        <div id="rotate-overlay" class="hidden">
+            <div class="rotate-content">
+                <svg class="rotate-icon" viewBox="0 0 24 24" width="80" height="80">
+                    <path fill="currentColor" d="M17.6 8.4L16.2 7H13v2h1.8l-2.4 2.4 1.4 1.4L19 8.4zM7 11V9H5.2l2.4-2.4L6.2 5.2 3 8.4l3.2 3.2L7 11zm14 10c0-1.1-.9-2-2-2h-2v2h2c3.3 0 6-2.7 6-6V9h-2v2h2v8zM2 11c0 3.3 2.7 6 6 6h2v-2H8c-2.2 0-4-1.8-4-4V9H2v2z"/>
+                </svg>
+                <p>Rotate your device</p>
+                <p>to play</p>
+            </div>
         </div>
     </div>
     <script src="game.js"></script>
