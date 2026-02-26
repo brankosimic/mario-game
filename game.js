@@ -304,8 +304,6 @@ function updatePlayer() {
     }
 
 
-    }
-
     // Check enemy collision
     for (const enemy of enemies) {
         if (player.x < enemy.x + enemy.width &&
