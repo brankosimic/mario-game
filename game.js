@@ -87,10 +87,10 @@ const flag = {
 
 // Brick blocks with mushrooms
 let brickBlocks = [
-    { x: 200, y: 380, width: 30, height: 30, hasMushroom: true, bounced: false },
-    { x: 600, y: 180, width: 30, height: 30, hasMushroom: true, bounced: false },
-    { x: 1000, y: 290, width: 30, height: 30, hasMushroom: true, bounced: false },
-    { x: 1400, y: 110, width: 30, height: 30, hasMushroom: true, bounced: false }
+    { x: 200, y: 350, width: 30, height: 30, hasMushroom: true, bounced: false },
+    { x: 600, y: 150, width: 30, height: 30, hasMushroom: true, bounced: false },
+    { x: 1000, y: 260, width: 30, height: 30, hasMushroom: true, bounced: false },
+    { x: 1400, y: 80, width: 30, height: 30, hasMushroom: true, bounced: false }
 ];
 
 // Input handling
@@ -135,6 +135,10 @@ if (leftBtn) {
         e.preventDefault();
         keys.ArrowLeft = false;
     });
+    leftBtn.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        keys.ArrowRight = false;
+    });
 }
 
 if (rightBtn) {
@@ -146,6 +150,10 @@ if (rightBtn) {
     rightBtn.addEventListener('touchend', (e) => {
         e.preventDefault();
         keys.ArrowRight = false;
+    });
+    rightBtn.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        keys.ArrowLeft = false;
     });
 }
 
@@ -245,7 +253,15 @@ function updatePlayer() {
                 player.width = 45;
                 player.height = 60;
                 playerSize = 1.5;
-                player.y -= (player.height - 40);
+                // Find platform to stand on
+                for (const platform of platforms) {
+                    if (player.x < platform.x + platform.width &&
+                        player.x + player.width > platform.x &&
+                        platform.y <= player.y + player.height) {
+                        player.y = platform.y - player.height;
+                        break;
+                    }
+                }
                 score += 200;
                 scoreEl.textContent = `Score: ${score}`;
             }
