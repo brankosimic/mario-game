@@ -87,10 +87,10 @@ const flag = {
 
 // Brick blocks with mushrooms
 let brickBlocks = [
-    { x: 200, y: 430, width: 30, height: 30, hasMushroom: true, bounced: false },
-    { x: 600, y: 230, width: 30, height: 30, hasMushroom: true, bounced: false },
-    { x: 1000, y: 340, width: 30, height: 30, hasMushroom: true, bounced: false },
-    { x: 1400, y: 160, width: 30, height: 30, hasMushroom: true, bounced: false }
+    { x: 200, y: 380, width: 30, height: 30, hasMushroom: true, bounced: false },
+    { x: 600, y: 180, width: 30, height: 30, hasMushroom: true, bounced: false },
+    { x: 1000, y: 290, width: 30, height: 30, hasMushroom: true, bounced: false },
+    { x: 1400, y: 110, width: 30, height: 30, hasMushroom: true, bounced: false }
 ];
 
 // Input handling
