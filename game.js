@@ -13,7 +13,7 @@ let playerSize = 1;
 // Player properties
 const player = {
     x: 100,
-    y: 400,
+    y: 480,
     width: 30,
     height: 40,
     color: '#FF0000',
@@ -32,7 +32,7 @@ const mapWidth = 2000;
 // Platform properties
 const platforms = [
     // Ground - extended
-    { x: 0, y: 550, width: mapWidth, height: 50, color: '#8B4513' },
+    { x: 0, y: 570, width: mapWidth, height: 30, color: '#8B4513' },
     // Platforms
     { x: 200, y: 450, width: 120, height: 20, color: '#CD853F' },
     { x: 400, y: 350, width: 120, height: 20, color: '#CD853F' },
@@ -64,12 +64,12 @@ let coins = [
 
 // Enemies
 let enemies = [
-    { x: 300, y: 510, width: 30, height: 30, color: '#8B0000', velocityX: 2, patrolStart: 250, patrolEnd: 500 },
-    { x: 600, y: 510, width: 30, height: 30, color: '#8B0000', velocityX: -2, patrolStart: 550, patrolEnd: 700 },
+    { x: 300, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: 2, patrolStart: 250, patrolEnd: 500 },
+    { x: 600, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: -2, patrolStart: 550, patrolEnd: 700 },
     { x: 450, y: 310, width: 30, height: 30, color: '#8B0000', velocityX: 2, patrolStart: 420, patrolEnd: 500 },
-    { x: 900, y: 510, width: 30, height: 30, color: '#8B0000', velocityX: -2, patrolStart: 850, patrolEnd: 1000 },
-    { x: 1300, y: 510, width: 30, height: 30, color: '#8B0000', velocityX: 2, patrolStart: 1250, patrolEnd: 1400 },
-    { x: 1700, y: 510, width: 30, height: 30, color: '#8B0000', velocityX: -2, patrolStart: 1650, patrolEnd: 1800 }
+    { x: 900, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: -2, patrolStart: 850, patrolEnd: 1000 },
+    { x: 1300, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: 2, patrolStart: 1250, patrolEnd: 1400 },
+    { x: 1700, y: 530, width: 30, height: 30, color: '#8B0000', velocityX: -2, patrolStart: 1650, patrolEnd: 1800 }
 ];
 
 // Flag (goal)
@@ -291,7 +291,7 @@ function handleWin() {
 
 function resetPlayerPosition() {
     player.x = 100;
-    player.y = 400;
+    player.y = 480;
     player.velocityX = 0;
     player.velocityY = 0;
     playerSize = 1;
@@ -451,14 +451,14 @@ function drawBackground() {
     // Bushes
     ctx.fillStyle = '#228B22';
     ctx.beginPath();
-    ctx.arc(300, 550, 40, 0, Math.PI * 2);
-    ctx.arc(340, 550, 35, 0, Math.PI * 2);
-    ctx.arc(380, 550, 40, 0, Math.PI * 2);
+    ctx.arc(300, 570, 40, 0, Math.PI * 2);
+    ctx.arc(340, 570, 35, 0, Math.PI * 2);
+    ctx.arc(380, 570, 40, 0, Math.PI * 2);
     ctx.fill();
     
     ctx.beginPath();
-    ctx.arc(700, 550, 35, 0, Math.PI * 2);
-    ctx.arc(740, 540, 30, 0, Math.PI * 2);
+    ctx.arc(700, 570, 35, 0, Math.PI * 2);
+    ctx.arc(740, 560, 30, 0, Math.PI * 2);
     ctx.fill();
 }
 

@@ -79,11 +79,15 @@ body {
 #mobile-controls {
     display: none;
     position: absolute;
-    bottom: 20px;
+    bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
-    gap: 15px;
+    gap: 25px;
+}
+
+#jumpBtn {
+    margin-top: 15px;
 }
 
 .control-btn {
@@ -105,7 +109,7 @@ body {
     transform: scale(0.95);
 }
 
-@media (max-width: 768px), (max-height: 768px) {
+@media (max-width: 768px) and (min-height: 768px) {
     #mobile-controls {
         display: flex;
     }
@@ -117,5 +121,22 @@ body {
     #gameCanvas {
         width: 100%;
         height: auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #gameCanvas {
+        width: 100vw;
+        height: 100vh;
+        max-width: 800px;
+        max-height: calc(100vh - 80px);
+    }
+    
+    #mobile-controls {
+        display: flex;
+    }
+    
+    #instructions {
+        display: none;
     }
 }
